@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net10.0;net9.0;net8.0</TargetFrameworks>
+    <RootNamespace>ControlDesk.Input</RootNamespace>
+    <AssemblyName>ControlDesk.Input</AssemblyName>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ControlDesk.Core\ControlDesk.Core.csproj" />
+    <ProjectReference Include="..\ControlDesk.Shared\ControlDesk.Shared.csproj" />
+    <ProjectReference Include="..\ControlDesk.Capture\ControlDesk.Capture.csproj" />
+  </ItemGroup>
+
+</Project>

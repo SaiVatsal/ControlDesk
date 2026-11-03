@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFrameworks>net10.0;net9.0;net8.0</TargetFrameworks>
+    <RootNamespace>ControlDesk.Server</RootNamespace>
+    <AssemblyName>ControlDesk.Server</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ControlDesk.Core\ControlDesk.Core.csproj" />
+    <ProjectReference Include="..\ControlDesk.Shared\ControlDesk.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

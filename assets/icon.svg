@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0066CC;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#003D80;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="fg" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#E0E0E0;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <!-- Rounded background -->
+  <rect x="12" y="12" width="232" height="232" rx="48" ry="48" fill="url(#bg)"/>
+  <!-- Subtle inner highlight -->
+  <rect x="16" y="16" width="224" height="224" rx="44" ry="44" fill="none" stroke="#1A8CFF" stroke-width="2" opacity="0.3"/>
+  <!-- "CD" Monogram -->
+  <text x="128" y="158" text-anchor="middle" font-family="Segoe UI, Arial, Helvetica, sans-serif"
+        font-size="96" font-weight="800" fill="url(#fg)" letter-spacing="-4">CD</text>
+  <!-- Subtle connection lines (representing remote desktop) -->
+  <g stroke="#FFFFFF" stroke-width="2" opacity="0.4" stroke-linecap="round">
+    <path d="M 60 190 Q 80 170 100 190"/>
+    <path d="M 156 190 Q 176 170 196 190"/>
+    <path d="M 100 200 Q 128 180 156 200" stroke-width="1.5" opacity="0.25"/>
+  </g>
+</svg>

@@ -1,0 +1,41 @@
+## Build and Output
+bin/
+obj/
+out/
+artifacts/
+[Bb]uild/
+dist/
+src/ControlDesk.Setup/Resources/*.exe
+
+## Claude / IDE
+.claude/
+.codex/
+
+## Visual Studio & Rider
+.vs/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## OS Generated
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+
+## Sensitive Data & Credentials
+*.pfx
+*.p12
+*.key
+*.pem
+credentials.json
+appsettings.Production.json
+appsettings.local.json
+*.db-shm
+*.db-wal

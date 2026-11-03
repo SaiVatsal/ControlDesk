@@ -1,0 +1,283 @@
+<UserControl x:Class="ControlDesk.App.Views.ActiveSessionView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="700" d:DesignWidth="1200">
+
+    <Grid>
+        <!-- Video Viewport - Full Size -->
+        <Border x:Name="VideoBorder" Background="{StaticResource Brush.Background.Primary}">
+            <Grid>
+                <!-- Main Video Display -->
+                <Image x:Name="VideoImage"
+                       Stretch="Uniform"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       RenderOptions.BitmapScalingMode="HighQuality"
+                       RenderOptions.EdgeMode="Aliased" />
+
+                <!-- Connection Status Overlay (when not connected) -->
+                <Border x:Name="DisconnectedOverlay"
+                        Background="#CC000000"
+                        Visibility="{Binding IsActive, Converter={StaticResource InverseBooleanConverter}, ConverterParameter={x:Static Visibility.Visible}}">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="🔌" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,16" />
+                        <TextBlock Text="No Active Session" Style="{StaticResource Text.Heading2}" Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,8" />
+                        <TextBlock Text="{Binding DisconnectedReason}" Style="{StaticResource Text.Body}" Foreground="{StaticResource Brush.Text.Secondary}" HorizontalAlignment="Center" TextAlignment="Center" MaxWidth="400" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Connecting Overlay -->
+                <Border x:Name="ConnectingOverlay"
+                        Background="#CC000000"
+                        Visibility="{Binding IsConnecting, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="🔄" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,16" />
+                        <TextBlock Text="Connecting..." Style="{StaticResource Text.Heading2}" Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,8" />
+                        <TextBlock Text="{Binding ConnectingStatus}" Style="{StaticResource Text.Body}" Foreground="{StaticResource Brush.Text.Secondary}" HorizontalAlignment="Center" TextAlignment="Center" MaxWidth="400" />
+                        <ProgressBar IsIndeterminate="True" Width="200" Height="4" Margin="0,16,0,0" Background="{StaticResource Brush.Background.Tertiary}" Foreground="{StaticResource Brush.Accent.Primary}" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Floating Toolbar (Top) -->
+        <Border VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,12,0,0" Padding="8,4" Background="{StaticResource Brush.Background.Primary}" CornerRadius="8" BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="1" Effect="{StaticResource Shadow.Small}">
+            <StackPanel Orientation="Horizontal" x:Name="TopToolbar">
+                <!-- Connection Info -->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,16,0" Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Ellipse Width="8" Height="8" Fill="Green" Margin="0,0,8,0" VerticalAlignment="Center" />
+                    <TextBlock Text="{Binding RemoteDeviceName}" Style="{StaticResource Text.Body}" VerticalAlignment="Center" Margin="0,0,8,0" />
+                    <TextBlock Text="{Binding RemoteDeviceId}" Style="{StaticResource Text.Code}" FontSize="11" Foreground="{StaticResource Brush.Text.Secondary}" VerticalAlignment="Center" Margin="0,0,8,0" FontFamily="Consolas, monospace" />
+                </StackPanel>
+
+                <Separator Style="{StaticResource Separator.Vertical}" Margin="0,0,16,0" Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                <!-- Monitor Selector -->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,16,0" Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock Text="🖥" Style="{StaticResource Text.Body}" VerticalAlignment="Center" Margin="0,0,6,0" />
+                    <ComboBox x:Name="MonitorSelector"
+                              ItemsSource="{Binding AvailableMonitors}"
+                              SelectedItem="{Binding SelectedMonitor, Mode=TwoWay}"
+                              DisplayMemberPath="DisplayName"
+                              Style="{StaticResource ComboBox.ToolBar}"
+                              Width="160"
+                              VerticalAlignment="Center" />
+                </StackPanel>
+
+                <Separator Style="{StaticResource Separator.Vertical}" Margin="0,0,16,0" Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                <!-- Quality Preset -->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,16,0" Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock Text="⚡" Style="{StaticResource Text.Body}" VerticalAlignment="Center" Margin="0,0,6,0" />
+                    <ComboBox x:Name="QualitySelector"
+                              ItemsSource="{Binding QualityPresets}"
+                              SelectedItem="{Binding SelectedQualityPreset, Mode=TwoWay}"
+                              DisplayMemberPath="DisplayName"
+                              Style="{StaticResource ComboBox.ToolBar}"
+                              Width="110"
+                              VerticalAlignment="Center" />
+                </StackPanel>
+
+                <Separator Style="{StaticResource Separator.Vertical}" Margin="0,0,16,0" Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                <!-- Scaling Mode -->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,16,0" Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <TextBlock Text="🔍" Style="{StaticResource Text.Body}" VerticalAlignment="Center" Margin="0,0,6,0" />
+                    <ComboBox x:Name="ScalingSelector"
+                              ItemsSource="{Binding ScalingModes}"
+                              SelectedItem="{Binding SelectedScalingMode, Mode=TwoWay}"
+                              DisplayMemberPath="DisplayName"
+                              Style="{StaticResource ComboBox.ToolBar}"
+                              Width="110"
+                              VerticalAlignment="Center" />
+                </StackPanel>
+
+                <Separator Style="{StaticResource Separator.Vertical}" Margin="0,0,16,0" Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                <!-- Input Toggle -->
+                <CheckBox x:Name="EnableInputCheckbox"
+                          Content="⌨ Input"
+                          IsChecked="{Binding EnableRemoteInput, Mode=TwoWay}"
+                          Style="{StaticResource CheckBox.ToolBar}"
+                          VerticalAlignment="Center"
+                          Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}}"
+                          ToolTip="Enable mouse and keyboard input to remote" />
+
+                <Separator Style="{StaticResource Separator.Vertical}" Margin="0,0,16,0" Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                <!-- Clipboard Toggle -->
+                <CheckBox x:Name="EnableClipboardCheckbox"
+                          Content="📋 Clipboard"
+                          IsChecked="{Binding EnableClipboardSync, Mode=TwoWay}"
+                          Style="{StaticResource CheckBox.ToolBar}"
+                          VerticalAlignment="Center"
+                          Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}}"
+                          ToolTip="Sync clipboard with remote" />
+
+                <Separator Style="{StaticResource Separator.Vertical}" Margin="0,0,16,0" Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                <!-- File Transfer Button -->
+                <Button x:Name="FileTransferButton"
+                        Style="{StaticResource Button.ToolBar}"
+                        Command="{Binding OpenFileTransferCommand}"
+                        ToolTip="File Transfer (Ctrl+T)"
+                        Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        VerticalAlignment="Center">
+                    <TextBlock Text="📁" Style="{StaticResource Text.Body}" FontSize="14" />
+                </Button>
+
+                <Separator Style="{StaticResource Separator.Vertical}" Margin="0,0,16,0" Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                <!-- Chat Button -->
+                <Button x:Name="ChatButton"
+                        Style="{StaticResource Button.ToolBar}"
+                        Command="{Binding ToggleChatCommand}"
+                        ToolTip="Chat (Ctrl+Shift+C)"
+                        Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        VerticalAlignment="Center">
+                    <TextBlock Text="💬" Style="{StaticResource Text.Body}" FontSize="14" />
+                </Button>
+
+                <Separator Style="{StaticResource Separator.Vertical}" Margin="0,0,16,0" Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                <!-- Fullscreen Button -->
+                <Button x:Name="FullscreenButton"
+                        Style="{StaticResource Button.ToolBar}"
+                        Command="{Binding ToggleFullscreenCommand}"
+                        ToolTip="Fullscreen (F11)"
+                        Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        VerticalAlignment="Center">
+                    <TextBlock Text="⛶" Style="{StaticResource Text.Body}" FontSize="14" />
+                </Button>
+
+                <!-- Disconnect Button -->
+                <Button x:Name="DisconnectButton"
+                        Style="{StaticResource Button.ToolBar.Danger}"
+                        Command="{Binding DisconnectCommand}"
+                        ToolTip="Disconnect (Ctrl+Shift+D)"
+                        Visibility="{Binding IsActive, Converter={StaticResource BooleanToVisibilityConverter}}"
+                        VerticalAlignment="Center"
+                        Margin="8,0,0,0">
+                    <TextBlock Text="✕" Style="{StaticResource Text.Body}" FontSize="14" FontWeight="Bold" Foreground="{StaticResource Brush.Status.Error}" />
+                </Button>
+            </StackPanel>
+        </Border>
+
+        <!-- Diagnostics HUD (Bottom Right) -->
+        <Border x:Name="DiagnosticsHud"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Margin="12"
+                Padding="10,8"
+                Background="#E0000000"
+                CornerRadius="6"
+                Visibility="{Binding ShowDiagnostics, Converter={StaticResource BooleanToVisibilityConverter}}"
+                Effect="{StaticResource Shadow.Small}">
+            <StackPanel Orientation="Horizontal">
+                <StackPanel Margin="0,0,20,0">
+                    <TextBlock Text="RTT" Style="{StaticResource Text.Caption}" Foreground="{StaticResource Brush.Text.Muted}" />
+                    <TextBlock Text="{Binding Diagnostics.RttText}" Style="{StaticResource Text.Body}" Foreground="White" FontFamily="Consolas, monospace" />
+                </StackPanel>
+                <StackPanel Margin="0,0,20,0">
+                    <TextBlock Text="FPS" Style="{StaticResource Text.Caption}" Foreground="{StaticResource Brush.Text.Muted}" />
+                    <TextBlock Text="{Binding Diagnostics.FpsText}" Style="{StaticResource Text.Body}" Foreground="White" FontFamily="Consolas, monospace" />
+                </StackPanel>
+                <StackPanel Margin="0,0,20,0">
+                    <TextBlock Text="Bitrate" Style="{StaticResource Text.Caption}" Foreground="{StaticResource Brush.Text.Muted}" />
+                    <TextBlock Text="{Binding Diagnostics.BitrateText}" Style="{StaticResource Text.Body}" Foreground="White" FontFamily="Consolas, monospace" />
+                </StackPanel>
+                <StackPanel Margin="0,0,20,0">
+                    <TextBlock Text="Transport" Style="{StaticResource Text.Caption}" Foreground="{StaticResource Brush.Text.Muted}" />
+                    <TextBlock Text="{Binding Diagnostics.TransportType}" Style="{StaticResource Text.Body}" Foreground="White" FontFamily="Consolas, monospace" />
+                </StackPanel>
+                <StackPanel>
+                    <TextBlock Text="Loss" Style="{StaticResource Text.Caption}" Foreground="{StaticResource Brush.Text.Muted}" />
+                    <TextBlock Text="{Binding Diagnostics.PacketLossText}" Style="{StaticResource Text.Body}" Foreground="White" FontFamily="Consolas, monospace" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- Chat Sidebar (Right) -->
+        <Border x:Name="ChatSidebar"
+                Width="320"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Stretch"
+                Background="{StaticResource Brush.Background.Primary}"
+                BorderBrush="{StaticResource Brush.Border.Subtle}"
+                BorderThickness="1,0,0,0"
+                Visibility="{Binding ShowChat, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- Chat Header -->
+                <Border Grid.Row="0" Background="{StaticResource Brush.Background.Tertiary}" BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="0,0,0,1" Padding="12,8">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Chat" Style="{StaticResource Text.Heading3}" VerticalAlignment="Center" />
+                        <Button Grid.Column="1" Style="{StaticResource Button.Flat}" Command="{Binding ToggleChatCommand}" ToolTip="Close Chat" Padding="6">
+                            <TextBlock Text="✕" Style="{StaticResource Text.Body}" FontSize="12" />
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!-- Chat Messages -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="8">
+                    <ItemsControl ItemsSource="{Binding ChatMessages}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Margin="0,0,0,8">
+                                    <StackPanel>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="{Binding SenderName}" Style="{StaticResource Text.Caption}" FontWeight="SemiBold" Foreground="{StaticResource Brush.Accent.Primary}" Margin="0,0,8,0" />
+                                            <TextBlock Grid.Column="1" Text="{Binding Timestamp, StringFormat='{}{0:HH:mm:ss}'}" Style="{StaticResource Text.Caption}" Foreground="{StaticResource Brush.Text.Muted}" />
+                                        </Grid>
+                                        <TextBlock Text="{Binding Message}" Style="{StaticResource Text.Body}" TextWrapping="Wrap" Margin="0,2,0,0" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <!-- Chat Input -->
+                <Border Grid.Row="2" Background="{StaticResource Brush.Background.Tertiary}" BorderBrush="{StaticResource Brush.Border.Subtle}" BorderThickness="0,1,0,0" Padding="8">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox x:Name="ChatInput"
+                                 Grid.Column="0"
+                                 Style="{StaticResource TextBox.Default}"
+                                 Text="{Binding ChatMessageText, UpdateSourceTrigger=PropertyChanged}"
+                                 ToolTip="Type a message..."
+                                 VerticalAlignment="Center"
+                                 Margin="0,0,8,0" />
+                        <Button Grid.Column="1"
+                                Style="{StaticResource Button.Primary}"
+                                Command="{Binding SendChatMessageCommand}"
+                                Content="Send"
+                                Padding="16,6"
+                                VerticalAlignment="Center"
+                                IsDefault="True" />
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

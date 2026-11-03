@@ -1,0 +1,428 @@
+<Window x:Class="ControlDesk.Setup.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ControlDesk.Setup"
+        xmlns:vm="clr-namespace:ControlDesk.Setup.ViewModels"
+        xmlns:conv="clr-namespace:ControlDesk.Setup.Converters"
+        mc:Ignorable="d"
+        Title="ControlDesk Setup"
+        Height="540"
+        Width="720"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        WindowStyle="SingleBorderWindow"
+        Background="{StaticResource BrushBackground}">
+    <Window.DataContext>
+        <vm:SetupViewModel/>
+    </Window.DataContext>
+    <Window.Resources>
+        <conv:StepToVisibilityConverter x:Key="StepToVisibilityConverter"/>
+        <conv:StepToBrushConverter x:Key="StepToBrushConverter"/>
+    </Window.Resources>
+
+    <!-- Root Grid with 4 strictly defined rows:
+         Row 0: Top Header Banner (70px)
+         Row 1: Step Indicator Breadcrumbs (36px)
+         Row 2: Dynamic Content Area (*)
+         Row 3: Bottom Navigation Bar (60px)
+    -->
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="36"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="60"/>
+        </Grid.RowDefinitions>
+
+        <!-- ============================================================
+             ROW 0: HEADER BANNER
+             ============================================================ -->
+        <Border Grid.Row="0" Background="{StaticResource BrushPrimary}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Border Width="46" Height="46" Margin="20,0,0,0" Background="{StaticResource BrushTextOnPrimary}" CornerRadius="23"
+                        HorizontalAlignment="Left" VerticalAlignment="Center">
+                    <TextBlock Text="CD" FontSize="18" FontWeight="Bold" Foreground="{StaticResource BrushPrimary}"
+                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </Border>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="16,0,20,0">
+                    <TextBlock Text="{Binding StepTitle}" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource BrushTextOnPrimary}"/>
+                    <TextBlock Text="{Binding StepSubtitle}" FontSize="12" Foreground="#D0E8FF" Margin="0,2,0,0" TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ============================================================
+             ROW 1: STEP INDICATOR (Dynamic Breadcrumbs)
+             ============================================================ -->
+        <Border Grid.Row="1" Background="{StaticResource BrushSurface}"
+                BorderBrush="{StaticResource BrushBorder}" BorderThickness="0,0,0,1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Welcome Step (Index 0) -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Ellipse Width="9" Height="9" Margin="0,0,6,0"
+                             Fill="{Binding CurrentStepIndex, Converter={StaticResource StepToBrushConverter}, ConverterParameter=0}"/>
+                    <TextBlock Text="Welcome" FontSize="11" FontWeight="Medium"
+                               Foreground="{Binding CurrentStepIndex, Converter={StaticResource StepToBrushConverter}, ConverterParameter=0}"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- License Step (Index 1) -->
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Ellipse Width="9" Height="9" Margin="0,0,6,0"
+                             Fill="{Binding CurrentStepIndex, Converter={StaticResource StepToBrushConverter}, ConverterParameter=1}"/>
+                    <TextBlock Text="License" FontSize="11" FontWeight="Medium"
+                               Foreground="{Binding CurrentStepIndex, Converter={StaticResource StepToBrushConverter}, ConverterParameter=1}"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Privacy Step (Index 2) -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Ellipse Width="9" Height="9" Margin="0,0,6,0"
+                             Fill="{Binding CurrentStepIndex, Converter={StaticResource StepToBrushConverter}, ConverterParameter=2}"/>
+                    <TextBlock Text="Privacy" FontSize="11" FontWeight="Medium"
+                               Foreground="{Binding CurrentStepIndex, Converter={StaticResource StepToBrushConverter}, ConverterParameter=2}"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Options Step (Index 3) -->
+                <StackPanel Grid.Column="3" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Ellipse Width="9" Height="9" Margin="0,0,6,0"
+                             Fill="{Binding CurrentStepIndex, Converter={StaticResource StepToBrushConverter}, ConverterParameter=3}"/>
+                    <TextBlock Text="Options" FontSize="11" FontWeight="Medium"
+                               Foreground="{Binding CurrentStepIndex, Converter={StaticResource StepToBrushConverter}, ConverterParameter=3}"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+
+                <!-- Install Step (Index 4) -->
+                <StackPanel Grid.Column="4" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Ellipse Width="9" Height="9" Margin="0,0,6,0"
+                             Fill="{Binding CurrentStepIndex, Converter={StaticResource StepToBrushConverter}, ConverterParameter=4}"/>
+                    <TextBlock Text="Install" FontSize="11" FontWeight="Medium"
+                               Foreground="{Binding CurrentStepIndex, Converter={StaticResource StepToBrushConverter}, ConverterParameter=4}"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- ============================================================
+             ROW 2: DYNAMIC CONTENT AREA
+             ============================================================ -->
+        <Grid Grid.Row="2" Margin="24,12,24,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>      <!-- Scrollable content fills all available space -->
+                <RowDefinition Height="Auto"/>   <!-- Pinned acceptance checkbox stays fixed at bottom -->
+            </Grid.RowDefinitions>
+
+            <!-- Scrollable Step Panels -->
+            <ScrollViewer Grid.Row="0" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                          PanningMode="VerticalOnly" FocusVisualStyle="{x:Null}">
+                <StackPanel>
+                    <!-- ================= WELCOME STEP ================= -->
+                    <StackPanel Visibility="{Binding CurrentStep, Converter={StaticResource StepToVisibilityConverter}, ConverterParameter=Welcome}">
+                        <Border Background="{StaticResource BrushSurface}" BorderBrush="{StaticResource BrushBorder}"
+                                BorderThickness="1" CornerRadius="4" Padding="18" Margin="0,0,0,10">
+                            <StackPanel>
+                                <TextBlock Text="ControlDesk Remote Desktop" FontSize="15" FontWeight="SemiBold"
+                                           Foreground="{StaticResource BrushTextPrimary}" Margin="0,0,0,6"/>
+                                <TextBlock Text="A production-grade, low-latency remote desktop solution designed for cross-border connections between India and Dubai."
+                                           FontSize="12" Foreground="{StaticResource BrushTextSecondary}" TextWrapping="Wrap" Margin="0,0,0,10"/>
+                                <Separator Background="{StaticResource BrushBorder}" Margin="0,0,0,10"/>
+                                <TextBlock Text="Included Capabilities:" FontSize="12" FontWeight="SemiBold"
+                                           Foreground="{StaticResource BrushTextPrimary}" Margin="0,0,0,6"/>
+                                <StackPanel>
+                                    <TextBlock Text="• Unified Dual-Role: Host and Controller in a single executable" FontSize="11" Foreground="{StaticResource BrushTextSecondary}" Margin="0,2,0,0"/>
+                                    <TextBlock Text="• Cryptographic Unattended Access: Asymmetric Ed25519 pairing with DPAPI key storage" FontSize="11" Foreground="{StaticResource BrushTextSecondary}" Margin="0,2,0,0"/>
+                                    <TextBlock Text="• Cross-Border NAT Traversal: WebRTC ICE with STUN and coturn TURN relay fallback" FontSize="11" Foreground="{StaticResource BrushTextSecondary}" Margin="0,2,0,0"/>
+                                    <TextBlock Text="• High-Performance Video: Hardware H.264 MFT encoder (QuickSync/NVENC/AMF) and VP8 fallback" FontSize="11" Foreground="{StaticResource BrushTextSecondary}" Margin="0,2,0,0"/>
+                                    <TextBlock Text="• End-to-End Security: DTLS-SRTP media encryption and zero analytics or telemetry" FontSize="11" Foreground="{StaticResource BrushTextSecondary}" Margin="0,2,0,0"/>
+                                    <TextBlock Text="• Session Continuity: System tray operation, Windows startup, clipboard sync &amp; file transfer" FontSize="11" Foreground="{StaticResource BrushTextSecondary}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                        <Border Background="{StaticResource BrushInfoBackground}" BorderBrush="{StaticResource BrushInfo}"
+                                BorderThickness="1" CornerRadius="4" Padding="12">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="ℹ" FontSize="16" Foreground="{StaticResource BrushInfo}" VerticalAlignment="Top" Margin="0,0,8,0"/>
+                                <TextBlock Text="ControlDesk requires Windows 10 (1903+) or Windows 11. Administrator rights are not required for standard installation or execution."
+                                           FontSize="11" Foreground="{StaticResource BrushTextPrimary}" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- ================= TERMS & CONDITIONS STEP ================= -->
+                    <StackPanel Visibility="{Binding CurrentStep, Converter={StaticResource StepToVisibilityConverter}, ConverterParameter=Terms}">
+                        <Border Background="{StaticResource BrushSurface}" BorderBrush="{StaticResource BrushBorder}"
+                                BorderThickness="1" CornerRadius="4" Padding="14">
+                            <StackPanel>
+                                <TextBlock Text="CONTROLDESK END-USER LICENSE AGREEMENT (EULA)"
+                                           FontSize="12" FontWeight="Bold" Foreground="{StaticResource BrushTextPrimary}" Margin="0,0,0,8"/>
+                                <TextBlock Text="Version 1.0 — Effective Date: 2026-11-02"
+                                           FontSize="10" Foreground="{StaticResource BrushTextSecondary}" Margin="0,0,0,12"/>
+
+                                <TextBlock Text="1. GRANT OF LICENSE"
+                                           FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource BrushTextPrimary}" Margin="0,0,0,2"/>
+                                <TextBlock Text="ControlDesk ('Software') is provided under a permissive license. You may use, copy, modify, and distribute the Software for personal, commercial, or educational purposes without restriction, provided that all copies include the original copyright notice and this license. The Software is provided 'as is' without warranty of any kind."
+                                           FontSize="11" Foreground="{StaticResource BrushTextSecondary}" TextWrapping="Wrap" Margin="0,0,0,10"/>
+
+                                <TextBlock Text="2. NO TELEMETRY / NO DATA COLLECTION"
+                                           FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource BrushTextPrimary}" Margin="0,0,0,2"/>
+                                <TextBlock Text="The Software does NOT collect, transmit, or store any usage analytics, telemetry, crash reports, or user behavior data. All connections are direct peer-to-peer between your devices. No data passes through our servers except initial signaling handshake (ephemeral, not logged)."
+                                           FontSize="11" Foreground="{StaticResource BrushTextSecondary}" TextWrapping="Wrap" Margin="0,0,0,10"/>
+
+                                <TextBlock Text="3. END-TO-END ENCRYPTION"
+                                           FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource BrushTextPrimary}" Margin="0,0,0,2"/>
+                                <TextBlock Text="All remote desktop sessions use DTLS-SRTP encryption via WebRTC. Session keys are negotiated per-connection using perfect forward secrecy. Local device identity keys (Ed25519) are protected by Windows DPAPI and never leave your machine."
+                                           FontSize="11" Foreground="{StaticResource BrushTextSecondary}" TextWrapping="Wrap" Margin="0,0,0,10"/>
+
+                                <TextBlock Text="4. UNATTENDED ACCESS"
+                                           FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource BrushTextPrimary}" Margin="0,0,0,2"/>
+                                <TextBlock Text="You may configure unattended access on host machines. This stores the paired device's public key locally and enables automatic challenge-response authentication. You retain full control: you can revoke trusted devices at any time from the Devices panel."
+                                           FontSize="11" Foreground="{StaticResource BrushTextSecondary}" TextWrapping="Wrap" Margin="0,0,0,10"/>
+
+                                <TextBlock Text="5. DISCLAIMER OF WARRANTY"
+                                           FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource BrushTextPrimary}" Margin="0,0,0,2"/>
+                                <TextBlock Text="THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY."
+                                           FontSize="11" Foreground="{StaticResource BrushTextSecondary}" TextWrapping="Wrap" Margin="0,0,0,10"/>
+
+                                <TextBlock Text="6. EXPORT COMPLIANCE"
+                                           FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource BrushTextPrimary}" Margin="0,0,0,2"/>
+                                <TextBlock Text="The Software includes cryptographic functionality. You are responsible for compliance with applicable export control laws and regulations of your jurisdiction."
+                                           FontSize="11" Foreground="{StaticResource BrushTextSecondary}" TextWrapping="Wrap" Margin="0,0,0,8"/>
+
+                                <TextBlock Text="Please check the box below to accept the terms and activate the 'Next >' button."
+                                           FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource BrushPrimary}" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- ================= PRIVACY POLICY STEP ================= -->
+                    <StackPanel Visibility="{Binding CurrentStep, Converter={StaticResource StepToVisibilityConverter}, ConverterParameter=Privacy}">
+                        <Border Background="{StaticResource BrushSurface}" BorderBrush="{StaticResource BrushBorder}"
+                                BorderThickness="1" CornerRadius="4" Padding="14">
+                            <StackPanel>
+                                <TextBlock Text="CONTROLDESK PRIVACY POLICY &amp; SECURITY ARCHITECTURE"
+                                           FontSize="12" FontWeight="Bold" Foreground="{StaticResource BrushTextPrimary}" Margin="0,0,0,8"/>
+
+                                <TextBlock Text="ZERO TELEMETRY COMMITMENT"
+                                           FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource BrushTextPrimary}" Margin="0,0,0,2"/>
+                                <TextBlock Text="ControlDesk does not collect, transmit, or store any personal data, usage statistics, crash reports, IP addresses, device identifiers, or behavioral analytics. There are no background services that 'phone home'. The application operates entirely offline except for the explicit peer-to-peer connection you initiate."
+                                           FontSize="11" Foreground="{StaticResource BrushTextSecondary}" TextWrapping="Wrap" Margin="0,0,0,10"/>
+
+                                <TextBlock Text="WHAT DATA EXISTS &amp; WHERE IT LIVES"
+                                           FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource BrushTextPrimary}" Margin="0,0,0,2"/>
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock Text="• Device Identity (Ed25519 keypair): Generated locally, private key encrypted with Windows DPAPI (CurrentUser scope) and machine-specific entropy. Never transmitted." FontSize="11" Foreground="{StaticResource BrushTextSecondary}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                    <TextBlock Text="• Trusted Device Records: Public keys of paired devices for unattended access. Stored locally in DPAPI-protected files (%LOCALAPPDATA%\ControlDesk\Credentials)." FontSize="11" Foreground="{StaticResource BrushTextSecondary}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                    <TextBlock Text="• Session History: Local SQLite database with connection timestamps, duration, transport type (P2P/STUN/TURN), and byte counts. Purely local, user-accessible." FontSize="11" Foreground="{StaticResource BrushTextSecondary}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                    <TextBlock Text="• Settings: Display preferences, quality presets, network config. Stored in local SQLite." FontSize="11" Foreground="{StaticResource BrushTextSecondary}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                    <TextBlock Text="• File Transfer Cache: Temporary chunks in %LOCALAPPDATA%\ControlDesk\Transfers, auto-cleaned after completion." FontSize="11" Foreground="{StaticResource BrushTextSecondary}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                </StackPanel>
+
+                                <TextBlock Text="NETWORK ARCHITECTURE"
+                                           FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource BrushTextPrimary}" Margin="0,0,0,2"/>
+                                <StackPanel Margin="0,0,0,10">
+                                    <TextBlock Text="• Signaling: WebSocket handshake to your self-hosted signaling server (or public bootstrap). Exchanges SDP &amp; ICE candidates only — no media flows through signaling." FontSize="11" Foreground="{StaticResource BrushTextSecondary}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                    <TextBlock Text="• Media Transport: Direct WebRTC peer connection. Prefers direct UDP (STUN-reflexive). Falls back to your self-hosted coturn TURN relay (authenticated, short-lived HMAC-SHA1 credentials)." FontSize="11" Foreground="{StaticResource BrushTextSecondary}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                    <TextBlock Text="• Encryption: DTLS 1.3 + SRTP (AES-GCM) for all media. Keys rotated per session." FontSize="11" Foreground="{StaticResource BrushTextSecondary}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                </StackPanel>
+
+                                <TextBlock Text="YOUR RIGHTS"
+                                           FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource BrushTextPrimary}" Margin="0,0,0,2"/>
+                                <StackPanel>
+                                    <TextBlock Text="• Complete data deletion: Uninstall removes all DPAPI stores, SQLite databases, and generated keys." FontSize="11" Foreground="{StaticResource BrushTextSecondary}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                    <TextBlock Text="• No account required: No email, no registration, no cloud identity." FontSize="11" Foreground="{StaticResource BrushTextSecondary}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                    <TextBlock Text="• Open audit: Binary verification guide provided (Ghidra analysis) to confirm no hidden telemetry." FontSize="11" Foreground="{StaticResource BrushTextSecondary}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- ================= OPTIONS STEP ================= -->
+                    <StackPanel Visibility="{Binding CurrentStep, Converter={StaticResource StepToVisibilityConverter}, ConverterParameter=Options}">
+                        <Border Background="{StaticResource BrushSurface}" BorderBrush="{StaticResource BrushBorder}"
+                                BorderThickness="1" CornerRadius="4" Padding="14" Margin="0,0,0,10">
+                            <StackPanel>
+                                <TextBlock Text="Installation Directory" FontSize="12" FontWeight="SemiBold"
+                                           Foreground="{StaticResource BrushTextPrimary}" Margin="0,0,0,6"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Grid.Column="0" Text="{Binding InstallDirectory, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                             IsReadOnly="True" VerticalContentAlignment="Center" Padding="8,6"
+                                             ToolTip="Click Browse to change"/>
+                                    <Button Grid.Column="1" Content="Browse..." Command="{Binding BrowseDirectoryCommand}"
+                                            Margin="8,0,0,0" Padding="16,6" MinWidth="90"/>
+                                </Grid>
+                                <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                                    <TextBlock Text="{Binding RequiredSpaceText}" FontSize="10"
+                                               Foreground="{StaticResource BrushTextSecondary}" Margin="0,0,16,0"/>
+                                    <TextBlock Text="{Binding AvailableSpaceText}" FontSize="10"
+                                               Foreground="{StaticResource BrushTextSecondary}"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Background="{StaticResource BrushSurface}" BorderBrush="{StaticResource BrushBorder}"
+                                BorderThickness="1" CornerRadius="4" Padding="14" Margin="0,0,0,10">
+                            <StackPanel>
+                                <TextBlock Text="Shortcuts &amp; Startup" FontSize="12" FontWeight="SemiBold"
+                                           Foreground="{StaticResource BrushTextPrimary}" Margin="0,0,0,8"/>
+                                <CheckBox IsChecked="{Binding CreateDesktopShortcut, Mode=TwoWay}"
+                                          Content="Create desktop shortcut"
+                                          FontSize="11" Margin="0,2,0,0"/>
+                                <CheckBox IsChecked="{Binding CreateStartMenuShortcut, Mode=TwoWay}"
+                                          Content="Create Start Menu folder"
+                                          FontSize="11" Margin="0,4,0,0"/>
+                                <CheckBox IsChecked="{Binding StartWithWindows, Mode=TwoWay}"
+                                          Content="Start ControlDesk automatically when Windows starts (minimized to tray)"
+                                          FontSize="11" Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Background="{StaticResource BrushInfoBackground}" BorderBrush="{StaticResource BrushInfo}"
+                                BorderThickness="1" CornerRadius="4" Padding="10">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="ℹ" FontSize="16" Foreground="{StaticResource BrushInfo}" VerticalAlignment="Top" Margin="0,0,8,0"/>
+                                <TextBlock Text="The 'Start with Windows' option registers ControlDesk in your per-user Run key (HKCU). No administrator privileges required."
+                                           FontSize="11" Foreground="{StaticResource BrushTextPrimary}" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- ================= INSTALLING STEP ================= -->
+                    <StackPanel Visibility="{Binding CurrentStep, Converter={StaticResource StepToVisibilityConverter}, ConverterParameter=Installing}">
+                        <Border Background="{StaticResource BrushSurface}" BorderBrush="{StaticResource BrushBorder}"
+                                BorderThickness="1" CornerRadius="4" Padding="20">
+                            <StackPanel>
+                                <TextBlock Text="{Binding InstallStatus}" FontSize="12"
+                                           Foreground="{StaticResource BrushTextPrimary}" TextWrapping="Wrap" Margin="0,0,0,16"/>
+                                <ProgressBar Value="{Binding InstallProgress}" Height="18"
+                                             Minimum="0" Maximum="100"/>
+                                <TextBlock Text="{Binding InstallProgress, StringFormat='{}{0:F0}%'}"
+                                           FontSize="11" Foreground="{StaticResource BrushTextSecondary}"
+                                           HorizontalAlignment="Right" Margin="0,6,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- ================= FINISHED STEP ================= -->
+                    <StackPanel Visibility="{Binding CurrentStep, Converter={StaticResource StepToVisibilityConverter}, ConverterParameter=Finished}">
+                        <Border Background="{StaticResource BrushSuccessBackground}" BorderBrush="{StaticResource BrushSuccess}"
+                                BorderThickness="1" CornerRadius="4" Padding="18" Margin="0,0,0,10">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="✓" FontSize="28" Foreground="{StaticResource BrushSuccess}" VerticalAlignment="Center" Margin="0,0,16,0"/>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="ControlDesk installed successfully!" FontSize="15" FontWeight="SemiBold"
+                                               Foreground="{StaticResource BrushTextPrimary}"/>
+                                    <TextBlock Text="{Binding InstalledExePath, StringFormat='Installed to: {0}'}"
+                                               FontSize="11" Foreground="{StaticResource BrushTextSecondary}" Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <Border Background="{StaticResource BrushSurface}" BorderBrush="{StaticResource BrushBorder}"
+                                BorderThickness="1" CornerRadius="4" Padding="14">
+                            <StackPanel>
+                                <TextBlock Text="Next Steps:" FontSize="12" FontWeight="SemiBold"
+                                           Foreground="{StaticResource BrushTextPrimary}" Margin="0,0,0,6"/>
+                                <StackPanel>
+                                    <TextBlock Text="• ControlDesk is ready to use from the Start Menu or desktop shortcut" FontSize="11" Foreground="{StaticResource BrushTextSecondary}" Margin="0,2,0,0"/>
+                                    <TextBlock Text="• On first launch, your unique Device ID (XXX-XXX-XXX) will be generated" FontSize="11" Foreground="{StaticResource BrushTextSecondary}" Margin="0,2,0,0"/>
+                                    <TextBlock Text="• Share your Device ID with your peer in Dubai/India to establish a session" FontSize="11" Foreground="{StaticResource BrushTextSecondary}" Margin="0,2,0,0"/>
+                                    <TextBlock Text="• Set up Unattended Access under Devices for automatic direct authentication" FontSize="11" Foreground="{StaticResource BrushTextSecondary}" Margin="0,2,0,0"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- ============================================================
+                 PINNED ACCEPTANCE CHECKBOX BARS (Fixed at bottom of Row 2)
+                 These bars NEVER scroll and are ALWAYS immediately visible!
+                 ============================================================ -->
+            <!-- Terms Checkbox Bar -->
+            <Border Grid.Row="1"
+                    Visibility="{Binding CurrentStep, Converter={StaticResource StepToVisibilityConverter}, ConverterParameter=Terms}"
+                    Background="{StaticResource BrushSurface}" BorderBrush="{StaticResource BrushPrimary}" BorderThickness="1.5"
+                    CornerRadius="4" Padding="12,10" Margin="0,8,0,0">
+                <CheckBox IsChecked="{Binding TermsAccepted, Mode=TwoWay}"
+                          Content="I accept the terms of the License Agreement"
+                          FontSize="12" FontWeight="SemiBold"
+                          Foreground="{StaticResource BrushTextPrimary}"
+                          Cursor="Hand"
+                          VerticalContentAlignment="Center"/>
+            </Border>
+
+            <!-- Privacy Checkbox Bar -->
+            <Border Grid.Row="1"
+                    Visibility="{Binding CurrentStep, Converter={StaticResource StepToVisibilityConverter}, ConverterParameter=Privacy}"
+                    Background="{StaticResource BrushSurface}" BorderBrush="{StaticResource BrushPrimary}" BorderThickness="1.5"
+                    CornerRadius="4" Padding="12,10" Margin="0,8,0,0">
+                <CheckBox IsChecked="{Binding PrivacyAccepted, Mode=TwoWay}"
+                          Content="I have read and understand the Privacy Policy &amp; Security Architecture"
+                          FontSize="12" FontWeight="SemiBold"
+                          Foreground="{StaticResource BrushTextPrimary}"
+                          Cursor="Hand"
+                          VerticalContentAlignment="Center"/>
+            </Border>
+
+            <!-- Finished Checkbox Bar -->
+            <Border Grid.Row="1"
+                    Visibility="{Binding CurrentStep, Converter={StaticResource StepToVisibilityConverter}, ConverterParameter=Finished}"
+                    Background="{StaticResource BrushSurface}" BorderBrush="{StaticResource BrushBorder}" BorderThickness="1"
+                    CornerRadius="4" Padding="12,10" Margin="0,8,0,0">
+                <CheckBox IsChecked="{Binding LaunchAfterInstall, Mode=TwoWay}"
+                          Content="Launch ControlDesk now"
+                          FontSize="12" FontWeight="SemiBold"
+                          Foreground="{StaticResource BrushTextPrimary}"
+                          Cursor="Hand"
+                          VerticalContentAlignment="Center"/>
+            </Border>
+        </Grid>
+
+        <!-- ============================================================
+             ROW 3: BOTTOM NAVIGATION BUTTON BAR
+             ============================================================ -->
+        <Border Grid.Row="3" Background="{StaticResource BrushSurface}"
+                BorderBrush="{StaticResource BrushBorder}" BorderThickness="0,1,0,0">
+            <Grid Margin="24,0,24,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="0" Content="Cancel" Command="{Binding CancelCommand}"
+                        HorizontalAlignment="Left" VerticalAlignment="Center"
+                        Padding="16,6" MinWidth="80" Height="30"/>
+
+                <Button Grid.Column="1" Content="&lt; Back" Command="{Binding BackCommand}"
+                        IsEnabled="{Binding CanGoBack}"
+                        Padding="20,8" Margin="0,0,12,0"
+                        MinWidth="80" Height="32"/>
+
+                <Button Grid.Column="2" Content="{Binding NextButtonText}" Command="{Binding NextCommand}"
+                        IsEnabled="{Binding CanGoNext}"
+                        Style="{StaticResource PrimaryButtonStyle}"
+                        Padding="24,8" MinWidth="100" Height="32"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

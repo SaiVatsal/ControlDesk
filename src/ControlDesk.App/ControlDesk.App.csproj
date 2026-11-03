@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <RootNamespace>ControlDesk.App</RootNamespace>
+    <AssemblyName>ControlDesk</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
+    <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <PublishTrimmed>false</PublishTrimmed>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Using Remove="System.Windows.Forms" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.2" />
+    <PackageReference Include="Serilog" Version="4.2.0" />
+    <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
+    <PackageReference Include="Serilog.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="2.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ControlDesk.Core\ControlDesk.Core.csproj" />
+    <ProjectReference Include="..\ControlDesk.Shared\ControlDesk.Shared.csproj" />
+    <ProjectReference Include="..\ControlDesk.Capture\ControlDesk.Capture.csproj" />
+    <ProjectReference Include="..\ControlDesk.Media\ControlDesk.Media.csproj" />
+    <ProjectReference Include="..\ControlDesk.Input\ControlDesk.Input.csproj" />
+    <ProjectReference Include="..\ControlDesk.Network\ControlDesk.Network.csproj" />
+    <ProjectReference Include="..\ControlDesk.Security\ControlDesk.Security.csproj" />
+    <ProjectReference Include="..\ControlDesk.Transfer\ControlDesk.Transfer.csproj" />
+    <ProjectReference Include="..\ControlDesk.Storage\ControlDesk.Storage.csproj" />
+  </ItemGroup>
+
+</Project>

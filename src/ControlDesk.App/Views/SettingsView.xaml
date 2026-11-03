@@ -1,0 +1,188 @@
+<UserControl x:Class="ControlDesk.App.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:local="clr-namespace:ControlDesk.App.ViewModels"
+             mc:Ignorable="d"
+             d:DesignHeight="800" d:DesignWidth="900">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+        <Grid Margin="24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Header -->
+            <Grid Grid.Row="0" Margin="0,0,0,16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="Settings" Style="{StaticResource Text.Heading2}" />
+
+                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                    <TextBlock Text="{Binding SaveStatus}" Style="{StaticResource Text.BodySecondary}" VerticalAlignment="Center" Foreground="{StaticResource Brush.Accent.Primary}" Margin="0,0,12,0" />
+                    <Button Style="{StaticResource Button.Primary}" Command="{Binding SaveCommand}" Padding="20,8" MinWidth="100">
+                        <TextBlock Text="{Binding IsSaving, Converter={StaticResource BooleanToTextConverter}, ConverterParameter='Saving...|Save Settings'}" Style="{StaticResource Text.Body}" />
+                    </Button>
+                </StackPanel>
+            </Grid>
+
+            <!-- Section 1: Device Identity -->
+            <Border Grid.Row="1" Style="{StaticResource Card}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="Device Identity" Style="{StaticResource Text.Heading3}" Margin="0,0,0,12" />
+
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Device Display Name" Style="{StaticResource Text.Body}" VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1" Style="{StaticResource TextBox.Default}" Text="{Binding DeviceName, UpdateSourceTrigger=PropertyChanged}" ToolTip="e.g. My-Workstation" MaxLength="64" />
+                    </Grid>
+
+                    <Button Style="{StaticResource Button.Secondary}" Command="{Binding CopyDeviceIdCommand}" HorizontalAlignment="Left" Padding="12,6">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="📋" FontSize="13" Margin="0,0,6,0" />
+                            <TextBlock Text="Copy My Device ID" Style="{StaticResource Text.Body}" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Border>
+
+            <!-- Section 2: General & Lifecycle -->
+            <Border Grid.Row="2" Style="{StaticResource Card}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="General &amp; Windows Lifecycle" Style="{StaticResource Text.Heading3}" Margin="0,0,0,12" />
+
+                    <CheckBox Content="Start ControlDesk automatically when Windows signs in"
+                              IsChecked="{Binding StartWithWindows, Mode=TwoWay}"
+                              Style="{StaticResource CheckBox.Default}"
+                              Margin="0,0,0,10" />
+
+                    <CheckBox Content="Minimize to system tray instead of closing when clicking 'X'"
+                              IsChecked="{Binding MinimizeToTrayOnClose, Mode=TwoWay}"
+                              Style="{StaticResource CheckBox.Default}"
+                              Margin="0,0,0,10" />
+
+                    <CheckBox Content="Launch minimized to system tray on startup"
+                              IsChecked="{Binding MinimizeToTrayOnStart, Mode=TwoWay}"
+                              Style="{StaticResource CheckBox.Default}"
+                              Margin="0,0,0,10" />
+
+                    <CheckBox Content="Prevent computer from sleeping during active remote sessions"
+                              IsChecked="{Binding PreventSleepDuringSession, Mode=TwoWay}"
+                              Style="{StaticResource CheckBox.Default}"
+                              ToolTip="Uses Win32 SetThreadExecutionState to keep system awake while connected" />
+                </StackPanel>
+            </Border>
+
+            <!-- Section 3: Network & Signaling -->
+            <Border Grid.Row="3" Style="{StaticResource Card}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="Network &amp; Signaling" Style="{StaticResource Text.Heading3}" Margin="0,0,0,12" />
+
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Signaling Server URL" Style="{StaticResource Text.Body}" VerticalAlignment="Center" />
+                        <TextBox Grid.Column="1" Style="{StaticResource TextBox.Default}" Text="{Binding SignalingServerUrl, UpdateSourceTrigger=PropertyChanged}" ToolTip="wss://your-vps.example.com/ws" />
+                    </Grid>
+                    <TextBlock Text="The signaling server facilitates initial WebRTC SDP and ICE candidate exchange between India and Dubai." Style="{StaticResource Text.Caption}" Margin="200,0,0,0" />
+                </StackPanel>
+            </Border>
+
+            <!-- Section 4: Display & Video Pipeline -->
+            <Border Grid.Row="4" Style="{StaticResource Card}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="Video Encoding &amp; Capture" Style="{StaticResource Text.Heading3}" Margin="0,0,0,12" />
+
+                    <CheckBox Content="Enable Hardware Video Acceleration (DXGI / Media Foundation H.264 MFT)"
+                              IsChecked="{Binding EnableHardwareEncoding, Mode=TwoWay}"
+                              Style="{StaticResource CheckBox.Default}"
+                              Margin="0,0,0,12" />
+
+                    <Grid Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="200" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Default Quality Preset" Style="{StaticResource Text.Body}" VerticalAlignment="Center" />
+                        <ComboBox Grid.Column="1" SelectedValue="{Binding DefaultQuality, Mode=TwoWay}" SelectedValuePath="Tag" Style="{StaticResource ComboBox.Default}">
+                            <ComboBoxItem Content="Speed (Low Bitrate, 15 FPS)" Tag="{x:Static local:SettingsViewModel+QualityPreset.Speed}" />
+                            <ComboBoxItem Content="Balanced (Medium, 30 FPS)" Tag="{x:Static local:SettingsViewModel+QualityPreset.Balanced}" />
+                            <ComboBoxItem Content="Quality (High, 60 FPS)" Tag="{x:Static local:SettingsViewModel+QualityPreset.Quality}" />
+                            <ComboBoxItem Content="Auto (Adaptive)" Tag="{x:Static local:SettingsViewModel+QualityPreset.Auto}" />
+                        </ComboBox>
+                    </Grid>
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="200" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Default Display Scaling" Style="{StaticResource Text.Body}" VerticalAlignment="Center" />
+                        <ComboBox Grid.Column="1" SelectedValue="{Binding DefaultScaling, Mode=TwoWay}" SelectedValuePath="Tag" Style="{StaticResource ComboBox.Default}">
+                            <ComboBoxItem Content="Actual Size (1:1)" Tag="{x:Static local:SettingsViewModel+ScalingMode.Actual}" />
+                            <ComboBoxItem Content="Fit to Window" Tag="{x:Static local:SettingsViewModel+ScalingMode.Fit}" />
+                            <ComboBoxItem Content="Fill Window" Tag="{x:Static local:SettingsViewModel+ScalingMode.Fill}" />
+                            <ComboBoxItem Content="Stretch" Tag="{x:Static local:SettingsViewModel+ScalingMode.Stretch}" />
+                        </ComboBox>
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <!-- Section 5: Session Permissions -->
+            <Border Grid.Row="5" Style="{StaticResource Card}" Margin="0,0,0,16">
+                <StackPanel>
+                    <TextBlock Text="Host Permission Defaults" Style="{StaticResource Text.Heading3}" Margin="0,0,0,12" />
+
+                    <CheckBox Content="Allow clipboard synchronization during incoming sessions"
+                              IsChecked="{Binding AllowClipboardSync, Mode=TwoWay}"
+                              Style="{StaticResource CheckBox.Default}"
+                              Margin="0,0,0,10" />
+
+                    <CheckBox Content="Allow file transfers to and from this machine"
+                              IsChecked="{Binding AllowFileTransfer, Mode=TwoWay}"
+                              Style="{StaticResource CheckBox.Default}"
+                              Margin="0,0,0,10" />
+
+                    <CheckBox Content="Enable in-session text chat"
+                              IsChecked="{Binding AllowChat, Mode=TwoWay}"
+                              Style="{StaticResource CheckBox.Default}" />
+                </StackPanel>
+            </Border>
+
+            <!-- Section 6: UI Theme -->
+            <Border Grid.Row="6" Style="{StaticResource Card}">
+                <StackPanel>
+                    <TextBlock Text="Appearance" Style="{StaticResource Text.Heading3}" Margin="0,0,0,12" />
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="200" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Color Theme" Style="{StaticResource Text.Body}" VerticalAlignment="Center" />
+                        <ComboBox Grid.Column="1" SelectedValue="{Binding Theme, Mode=TwoWay}" SelectedValuePath="Tag" Style="{StaticResource ComboBox.Default}">
+                            <ComboBoxItem Content="Dark (Default)" Tag="Dark" />
+                            <ComboBoxItem Content="Light" Tag="Light" />
+                            <ComboBoxItem Content="Follow Windows System" Tag="System" />
+                        </ComboBox>
+                    </Grid>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </ScrollViewer>
+</UserControl>

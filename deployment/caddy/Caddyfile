@@ -1,0 +1,39 @@
+{
+    email {$EMAIL}
+    admin off
+}
+
+{$DOMAIN} {
+    # Health check endpoint (no auth)
+    @health path /health
+    respond @health 200
+
+    # WebSocket upgrade for signaling
+    @websocket {
+        header Connection *Upgrade*
+        header Upgrade websocket
+    }
+    reverse_proxy @websocket signaling:5000 {
+        transport http {
+            # WebSocket support
+            flush_interval -1
+        }
+    }
+
+    # HTTP fallback for signaling
+    reverse_proxy signaling:5000
+
+    # Security headers
+    header {
+        Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "strict-origin-when-cross-origin"
+    }
+
+    # Logging
+    log {
+        output stdout
+        format json
+    }
+}

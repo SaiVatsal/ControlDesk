@@ -1,0 +1,26 @@
+using System.Globalization;
+using System.Windows;
+using System.Windows.Data;
+using ControlDesk.Setup.ViewModels;
+
+namespace ControlDesk.Setup.Converters;
+
+public class StepToVisibilityConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value is SetupStep currentStep && parameter is string stepName)
+        {
+            if (Enum.TryParse<SetupStep>(stepName, out var targetStep))
+            {
+                return currentStep == targetStep ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+        return Visibility.Collapsed;
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}

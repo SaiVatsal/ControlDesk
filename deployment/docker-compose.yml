@@ -1,0 +1,76 @@
+version: '3.8'
+
+services:
+  # ControlDesk Signaling Server
+  signaling:
+    build:
+      context: ../..
+      dockerfile: deployment/signaling/Dockerfile
+    container_name: controldesk-signaling
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - TURN__DOMAIN=${TURN_DOMAIN:-turn.controldesk.internal}
+      - TURN__SECRET=${TURN_SECRET:-ControlDeskTurnSecret2026ChangeInProduction}
+    volumes:
+      - ./logs:/app/logs
+    networks:
+      - controldesk-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # coturn TURN/STUN Server
+  coturn:
+    image: coturn/coturn:latest
+    container_name: controldesk-coturn
+    restart: unless-stopped
+    ports:
+      - "3478:3478"
+      - "3478:3478/udp"
+      - "5349:5349"
+      - "5349:5349/udp"
+      - "49152-65535:49152-65535/udp"
+    environment:
+      - TURN_SERVER_SECRET=${TURN_SECRET:-ControlDeskTurnSecret2026ChangeInProduction}
+      - REALM=${TURN_DOMAIN:-turn.controldesk.internal}
+      - EXTERNAL_IP=${EXTERNAL_IP:-auto}
+    volumes:
+      - ./coturn/turnserver.conf:/etc/coturn/turnserver.conf:ro
+    networks:
+      - controldesk-network
+    command: -c /etc/coturn/turnserver.conf --no-cli --verbose
+
+  # Caddy Reverse Proxy with Automatic HTTPS (Let's Encrypt)
+  caddy:
+    image: caddy:2-alpine
+    container_name: controldesk-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      - DOMAIN=${SIGNALING_DOMAIN:-signaling.controldesk.example.com}
+      - EMAIL=${LETSENCRYPT_EMAIL:-admin@example.com}
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    networks:
+      - controldesk-network
+    depends_on:
+      - signaling
+
+volumes:
+  caddy-data:
+  caddy-config:
+
+networks:
+  controldesk-network:
+    driver: bridge
